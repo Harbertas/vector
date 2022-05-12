@@ -1,5 +1,0 @@
-make.exe --dry-run --keep-going --print-directory
-make: Entering directory 'c:/Users/Eimantas/Desktop/vector'
-g++ -o main test.cpp vector.cpp
-make: Leaving directory 'c:/Users/Eimantas/Desktop/vector'
- 

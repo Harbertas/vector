@@ -1,49 +1,65 @@
 #pragma once
 #include <memory>
 
+#include <iostream>
+#include <string>
+
 template <class T>
 class vector {
     public:
         typedef T* iterator;
         typedef const T* const_iterator;
-        typedef size_t size_type;
         typedef T value_type;
+        typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
 
         vector() { create(); }
-        explicit vector(size_type n, const T& t = T{}) { create(n, t); }
+        explicit vector(size_t n, const T& t = T{}) { create(n, t); }
+        ~vector() { del(); }
         vector(const vector& v) { create(v.begin(), v.end()); }
         
         vector& operator=(const vector&);
-        ~vector() { del(); }
+        T& operator[](size_t i) { return dt[i]; }
+        const T& operator[](size_t i) const { return dt[i]; }
 
-        T& operator[](size_type i) { return data[i]; }
-        const T& operator[](size_type i) const { return data[i]; }
+        void assign(size_t, const T&);
+        T& at(size_t);
+        T& back();
+        iterator begin() { return dt; }
+        size_t capacity() const { return cap - dt; }
+        const_iterator cbegin() const { return dt; }
+        const_iterator cend() const { return sz; }
+        void clear();
+        const_reverse_iterator crbegin() const { return const_reverse_iterator(cend()); }
+        const_reverse_iterator crend() const { return const_reverse_iterator(cbegin()); }
+        T* data() { return dt; }
 
-        void push_back (const T& t) {
+        iterator end() { return sz; }
+
+        void push_back (const T& value) {
             if (sz == cap)
                 expand();
-            unchecked_append(t);
+            unchecked_append(value);
         }
 
-        size_type size() const { return sz - data; }
-        size_type capacity() const { return cap - data; }
-        iterator begin() { return data; }
-        const_iterator begin() const { return data; }
-        iterator end() { return sz; }
-        const_iterator end() const { return sz; }
+        void reserve(size_t);
+
+        void shrink_to_fit();
+        size_t size() const { return sz - dt; }
+
     private:
-        iterator data;
+        iterator dt;
         iterator sz;
         iterator cap;
 
         std::allocator<T> alloc;
 
         void create() ;
-        void create(size_type, const T&);
+        void create(size_t, const T&);
         void create(const_iterator, const_iterator);
 
         void del();
 
+        void resize(size_t);
         void expand();
         void unchecked_append(const T&);
 };

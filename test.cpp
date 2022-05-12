@@ -7,24 +7,52 @@ int main() {
     std::vector<int> v;
     vector<int> v1;
 
+    v.push_back(5);
+    v.push_back(4);
 
-    std::cout << v.size() << "\n";
-    std::cout << v1.size() << "\n";
-    v.push_back(3);
-    v.push_back(8);
-    v.push_back(44);
-    v.push_back(23);
-    // v.push_back(5);
-
-    v1.push_back(8);
-    // v1.push_back(44);
-    v1.push_back(23);
-    v1.push_back(3);
     v1.push_back(5);
-    std::cout << v.capacity() << "\n";
-    std::cout << v1.capacity() << "\n";
+    v1.push_back(4);
 
-    std::cout << v[3] << "\n";
-    std::cout << v1[3] << "\n";
+    v.assign(9, 15);
+    v1.assign(9, 15);
+
+    v.push_back(3);
+    v1.push_back(3);
 
 }
+
+// DONE ----------
+// assign
+// at
+// back
+// begin
+// cbegin
+// cend
+// clear
+// crbegin
+// crend
+// data
+
+// end
+
+// push_back
+
+// reserve
+
+// shrink_to_fit
+// size
+
+// TODO ------------
+// emplace
+// emplace_back
+// empty
+// erase
+// front
+// get_allocator
+// insert
+// max_size
+// pop_back
+// rbegin
+// rend
+// resize
+// swap
