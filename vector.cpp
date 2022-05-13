@@ -15,7 +15,7 @@ void vector<T>::create() {
 }
 
 template <class T>
-void vector<T>::create(size_t n, const T& val) {
+void vector<T>::create(size_type n, const T& val) {
     dt = alloc.allocate(n);
     cap = sz = dt + n;
     std::uninitialized_fill(dt, cap, val);
@@ -39,7 +39,7 @@ void vector<T>::del() {
 }
 
 template <class T>
-void vector<T>::resize(size_t new_cap) {
+void vector<T>::resize(size_type new_cap) {
     iterator new_dt = alloc.allocate(new_cap);
     iterator new_sz = std::uninitialized_copy(dt, sz, new_dt);
 
@@ -52,7 +52,7 @@ void vector<T>::resize(size_t new_cap) {
 
 template <class T>
 void vector<T>::expand() {
-    size_t new_cap = 2 * (this->capacity());
+    size_type new_cap = std::max(2 * (cap - dt), ptrdiff_t(1));
 
     iterator new_dt = alloc.allocate(new_cap);
     iterator new_sz = std::uninitialized_copy(dt, sz, new_dt);
@@ -70,7 +70,7 @@ void vector<T>::unchecked_append(const T& val) {
 }
 
 template <class T>
-void vector<T>::reserve(size_t s) {
+void vector<T>::reserve(size_type s) {
     if (s >= this->size() && s >= 0)
         resize(s);
     else {
@@ -85,7 +85,7 @@ void vector<T>::shrink_to_fit() {
 }
 
 template <class T>
-T& vector<T>::at(size_t i) {
+typename vector<T>::reference vector<T>::at(size_type i) {
     if (i >= this->size()) {
         throw std::out_of_range("vector::_M_range_check: __n (which is " + std::to_string(i) + " ) >= this->size() (which is " + std::to_string(i) + " )");
     } else
@@ -93,19 +93,77 @@ T& vector<T>::at(size_t i) {
 }
 
 template <class T>
-void vector<T>::assign(size_t n, const T& value) {
+typename vector<T>::const_reference vector<T>::at(size_type i) const {
+    if (i >= this->size()) {
+        throw std::out_of_range("vector::_M_range_check: __n (which is " + std::to_string(i) + " ) >= this->size() (which is " + std::to_string(i) + " )");
+    } else
+        return dt[i];
+}
+
+template <class T>
+void vector<T>::assign(size_type n, const T& value) {
     del();
     create(n, value);
 }
 
 template <class T>
-T& vector<T>::back() {
-    return *(this->end()-1);
+void vector<T>::assign(iterator first, iterator last) {
+    del();
+    create(first, last);
 }
 
 template <class T>
-void vector<T>::clear() {
-    size_t cap = this->capacity();
+void vector<T>::assign(std::initializer_list<T> l) {
+    del();
+    create(l.begin(), l.end());
+}
+
+template <class T>
+void vector<T>::clear() noexcept {
+    size_type cap = this->capacity();
     del();
     resize(cap);
+}
+
+template <class T>
+typename vector<T>::iterator vector<T>::emplace(iterator iter, const T& value) {
+    T val = *iter;
+
+    iterator it;
+    if (sz == cap)
+        expand();
+        int j = 0;
+        while (val != dt[j]) {
+            j++;
+        }
+        it = &dt[j];
+
+    for (iterator i = sz - 1; i != it - 1; i--)
+        *(i+1) = *i;
+    sz++;
+
+    *it = value;
+    return it;
+}
+
+template <class T>
+void vector<T>::emplace_back(const T& value) {
+    if (sz == cap)
+        expand();
+    *sz = value;
+    sz++;
+}
+
+template <class T>
+void vector<T>::erase(iterator it) {
+    for (iterator i = it; i != this->end()-1; i++)
+        *i = *(i+1);
+    sz--;
+}
+
+template <class T>
+void vector<T>::erase(iterator b, iterator e) {
+    for (iterator i = b; i != e + (e - b); i++)
+        *i = *(i + (e - b));
+    sz -= (e - b);
 }
