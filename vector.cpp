@@ -40,14 +40,51 @@ void vector<T>::del() {
 
 template <class T>
 void vector<T>::resize(size_type new_cap) {
-    iterator new_dt = alloc.allocate(new_cap);
-    iterator new_sz = std::uninitialized_copy(dt, sz, new_dt);
+    size_type old_size = this->size();
+    if (new_cap > this->capacity()) {
+        iterator new_dt = alloc.allocate(new_cap);
+        iterator new_sz = std::uninitialized_copy(dt, dt + new_cap, new_dt);
 
-    del();
+        del();
 
-    dt = new_dt;
-    sz = new_sz;
-    cap = dt + new_cap;
+        dt = new_dt;
+        sz = new_sz;
+        cap = dt + new_cap;
+    } else {
+        sz = dt + new_cap;
+    }
+    if (new_cap > old_size) {
+        auto it = dt + old_size;
+        while (it != sz) {
+            *it = 0;
+            it++;
+        }
+    }
+}
+
+template <class T>
+void vector<T>::resize(size_type new_cap, const value_type& val) {
+    size_type old_size = this->size();
+    if (new_cap > this->capacity()) {
+        iterator new_dt = alloc.allocate(new_cap);
+        iterator new_sz = std::uninitialized_copy(dt, dt + new_cap, new_dt);
+
+        del();
+
+        dt = new_dt;
+        sz = new_sz;
+        cap = dt + new_cap;
+    } else {
+        sz = dt + new_cap;
+    }
+
+    if (new_cap > old_size) {
+        auto it = dt + old_size;
+        while (it != sz) {
+            *it = val;
+            it++;
+        }
+    }
 }
 
 template <class T>
@@ -65,6 +102,23 @@ void vector<T>::expand() {
 }
 
 template <class T>
+void vector<T>::expand(size_type new_cap) {
+    auto old_size = this->size();
+    iterator new_dt = alloc.allocate(new_cap);
+    iterator new_sz = std::uninitialized_copy(dt, dt + new_cap, new_dt);
+
+    del();
+
+    dt = new_dt;
+    sz = new_sz;
+    cap = dt + new_cap;
+    
+    if (this->size() > old_size) {
+        sz -= this->size() - old_size;
+    }
+}
+
+template <class T>
 void vector<T>::unchecked_append(const T& val) {
     alloc.construct(sz++, val);
 }
@@ -72,7 +126,7 @@ void vector<T>::unchecked_append(const T& val) {
 template <class T>
 void vector<T>::reserve(size_type s) {
     if (s >= this->size() && s >= 0)
-        resize(s);
+        expand(s);
     else {
         std::bad_alloc exception;
         throw exception;
@@ -81,7 +135,7 @@ void vector<T>::reserve(size_type s) {
 
 template <class T>
 void vector<T>::shrink_to_fit() {
-    resize(this->size());
+    expand(this->size());
 }
 
 template <class T>
@@ -120,23 +174,17 @@ void vector<T>::assign(std::initializer_list<T> l) {
 
 template <class T>
 void vector<T>::clear() noexcept {
-    size_type cap = this->capacity();
-    del();
-    resize(cap);
+    sz = dt;
 }
 
 template <class T>
-typename vector<T>::iterator vector<T>::emplace(iterator iter, const T& value) {
-    T val = *iter;
+typename vector<T>::iterator vector<T>::emplace(iterator position, const value_type& value) {
+    int pos = position - dt;
 
-    iterator it;
     if (sz == cap)
         expand();
-        int j = 0;
-        while (val != dt[j]) {
-            j++;
-        }
-        it = &dt[j];
+
+    iterator it = dt + pos;
 
     for (iterator i = sz - 1; i != it - 1; i--)
         *(i+1) = *i;
@@ -166,4 +214,108 @@ void vector<T>::erase(iterator b, iterator e) {
     for (iterator i = b; i != e + (e - b); i++)
         *i = *(i + (e - b));
     sz -= (e - b);
+}
+
+template <class T>
+typename vector<T>::iterator vector<T>::insert(const_iterator position, const value_type& value) {
+    int pos = position - dt;
+
+    if (sz == cap)
+        expand();
+
+    iterator it = dt + pos;
+
+    for (iterator i = sz - 1; i != it - 1; i--)
+        *(i+1) = *i;
+    sz++;
+
+    *it = value;
+    return it;
+}
+
+template <class T>
+void vector<T>::insert(const_iterator position, size_type n, const value_type& val) {
+    int pos = position - dt;
+
+    if ((sz + n) > cap)
+        expand((sz+n) - dt);
+
+    iterator it = dt + pos;
+
+    for (iterator i = sz - 1; i != it - 1; i--)
+        *(i+n) = *i;
+    sz += n;
+
+    for (int i = 0; i < n; i++)
+        *(it + i) = val;
+}
+
+template <class T>
+void vector<T>::insert(const_iterator position, iterator first, iterator last) {
+    size_type n = last - first;
+    int pos = position - dt;
+
+    if ((sz + n) > cap)
+        expand((sz+n) - dt);
+
+    iterator it = dt + pos;
+
+    for (iterator i = sz - 1; i != it - 1; i--)
+        *(i+n) = *i;
+    sz += n;
+
+    for (int i = 0; i < n; i++)
+        *(it + i) = *(first + i);
+}
+
+template <class T>
+typename vector<T>::iterator vector<T>::insert(const_iterator position, value_type&& val) {
+    int pos = position - dt;
+
+    if (sz == cap)
+        expand();
+
+    iterator it = dt + pos;
+
+    for (iterator i = sz - 1; i != it - 1; i--)
+        *(i+1) = *i;
+    sz++;
+
+    *it = val;
+    return it;
+}
+
+template <class T>
+typename vector<T>::iterator vector<T>::insert(const_iterator position, std::initializer_list<value_type> l) {
+    size_type n = l.size();
+    int pos = position - dt;
+
+    if ((sz + n) > cap)
+        expand((sz+n) - dt);
+
+    iterator it = dt + pos;
+
+    for (iterator i = sz - 1; i != it - 1; i--)
+        *(i+n) = *i;
+    sz += n;
+
+    auto lit = l.begin();
+    for (int i = 0; i < n; i++)
+        *(it + i) = *(lit + i);
+
+    return it;
+}
+
+
+template <class T>
+void vector<T>::swap(vector& vec) {
+    auto tmp (vec);
+
+    vec.clear();
+    for (auto it = dt; it != sz; it++) {
+        vec.push_back(*it);
+    }
+
+    this->del();
+    this->create(tmp.begin(), tmp.end());
 }

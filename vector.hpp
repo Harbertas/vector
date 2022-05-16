@@ -14,6 +14,7 @@ class vector {
         typedef const T const_value_type;
         typedef T& reference;
         typedef const T& const_reference;
+        typedef std::reverse_iterator<iterator> reverse_iterator;
         typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
 
         vector() { create(); }
@@ -58,7 +59,7 @@ class vector {
 
         void emplace_back(const value_type&);
 
-        bool empty() const noexcept { return dt == nullptr; }
+        bool empty() const noexcept { return (sz - dt) == 0 || dt == nullptr; }
 
         iterator end() noexcept { return sz; }
         const_iterator end() const noexcept { return sz; }
@@ -71,6 +72,15 @@ class vector {
 
         std::allocator<T> get_allocator() const noexcept { return alloc; }
 
+        iterator insert(const_iterator , const value_type&);
+        void insert(const_iterator , size_type, const value_type&);
+        void insert(const_iterator , iterator, iterator);
+        iterator insert(const_iterator, value_type&&);
+        iterator insert(const_iterator, std::initializer_list<value_type>);
+
+        size_type max_size() const noexcept { return alloc.max_size(); }
+
+        void pop_back() { sz--; }
 
         void push_back (const value_type& value) {
             if (sz == cap)
@@ -83,10 +93,22 @@ class vector {
             unchecked_append(value);
         }
 
+        reverse_iterator rbegin() noexcept { return reverse_iterator(end()); }
+        const_reverse_iterator rbegin() const noexcept { return const_reverse_iterator(cend()); }
+
+        reverse_iterator rend() noexcept { return reverse_iterator(begin()); }
+        const_reverse_iterator rend() const noexcept { return const_reverse_iterator(cbegin()); }
+        
         void reserve(size_type);
 
+        void resize(size_type);
+        void resize (size_type, const value_type&);
+        
         void shrink_to_fit();
+
         size_type size() const noexcept { return sz - dt; }
+
+        void swap(vector&);
 
     private:
         iterator dt;
@@ -101,7 +123,7 @@ class vector {
 
         void del();
 
-        void resize(size_type);
         void expand();
+        void expand(size_type);
         void unchecked_append(const T&);
 };
