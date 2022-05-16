@@ -4,18 +4,25 @@
 #include "vector.cpp"
 
 int main() {
-  vector<int> myints;
-  std::cout << "0. size: " << myints.size() << '\n';
+  
+  unsigned int sz = 100000000;
+  int p1 = 0, p2 = 0;
 
-  for (int i=0; i<10; i++) myints.push_back(i);
-  std::cout << "1. size: " << myints.size() << '\n';
+  std::vector<int> v1;
+  for (int i = 1; i <= sz; ++i) {
+    v1.push_back(i);
+    if (v1.size() == v1.capacity())
+      p1++;
+  }
 
-  myints.insert (myints.end(),10,100);
-  std::cout << "2. size: " << myints.size() << '\n';
+  vector<int> v2;
+  for (int i = 1; i <= sz; ++i) {
+    v2.push_back(i);
+    if (v2.size() == v2.capacity())
+      p2++;
+  }
 
-  myints.pop_back();
-  std::cout << "3. size: " << myints.size() << '\n';
-
+  std::cout << "p1: " << p1 << "\np2: " << p2;
 }
 
 // DONE ----------
