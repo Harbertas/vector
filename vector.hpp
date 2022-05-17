@@ -1,7 +1,5 @@
 #pragma once
 #include <memory>
-
-#include <iostream>
 #include <string>
 
 template <class T>
@@ -22,6 +20,7 @@ class vector {
         vector(std::initializer_list<value_type> l) { create(l.begin(), l.end()); }
         ~vector() { del(); }
         vector(const vector& v) { create(v.begin(), v.end()); }
+        vector(const_iterator b, const_iterator e) { create(b, e); }
         
         vector& operator=(const vector&);
         T& operator[](size_type i) { return dt[i]; }
