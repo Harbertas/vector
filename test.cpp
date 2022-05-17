@@ -5,24 +5,29 @@
 
 int main() {
   
-  unsigned int sz = 100000000;
-  int p1 = 0, p2 = 0;
-
-  std::vector<int> v1;
-  for (int i = 1; i <= sz; ++i) {
-    v1.push_back(i);
-    if (v1.size() == v1.capacity())
-      p1++;
-  }
-
-  vector<int> v2;
-  for (int i = 1; i <= sz; ++i) {
-    v2.push_back(i);
-    if (v2.size() == v2.capacity())
-      p2++;
-  }
-
-  std::cout << "p1: " << p1 << "\np2: " << p2;
+    vector<int> alice{1, 2, 3};
+    vector<int> bob{7, 8, 9, 10};
+    vector<int> eve{1, 2, 3};
+ 
+    std::cout << std::boolalpha;
+ 
+    // Compare non equal containers
+    std::cout << (alice == bob) << '\n';
+    std::cout << (alice != bob) << '\n';
+    std::cout << (alice < bob) << '\n';
+    std::cout << (alice <= bob) << '\n';
+    std::cout << (alice > bob) << '\n';
+    std::cout << (alice >= bob) << '\n';
+ 
+    std::cout << '\n';
+ 
+    // Compare equal containers
+    std::cout << (alice == eve) << '\n';
+    std::cout << (alice != eve) << '\n';
+    std::cout << (alice < eve) << '\n';
+    std::cout << (alice <= eve) << '\n';
+    std::cout << (alice > eve) << '\n';
+    std::cout << (alice >= eve) << '\n';
 }
 
 // DONE ----------

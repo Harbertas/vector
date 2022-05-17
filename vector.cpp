@@ -319,3 +319,33 @@ void vector<T>::swap(vector& vec) {
     this->del();
     this->create(tmp.begin(), tmp.end());
 }
+
+template <class T>
+bool vector<T>::operator==(const vector& v) {
+    return (this->size() == v.size() && std::equal(this->begin(), this->end(), v.begin()));
+}
+
+template <class T>
+bool vector<T>::operator!=(const vector& v) {
+    return !(this->size() == v.size() && std::equal(this->begin(), this->end(), v.begin()));
+}
+
+template <class T>
+bool operator<(const vector<T>& a, const vector<T>& b) {
+    return std::lexicographical_compare(a.begin(), a.end(), b.begin(), b.end());
+}
+
+template <class T>
+bool operator>(const vector<T>& a, const vector<T>& b) {
+    return (b < a);
+}
+
+template <class T>
+bool operator<=(const vector<T>& a, const vector<T>& b) {
+    return !(b < a);
+}
+
+template <class T>
+bool operator>=(const vector<T>& a, const vector<T>& b) {
+    return !(a < b);
+}
