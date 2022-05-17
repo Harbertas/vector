@@ -27,6 +27,7 @@ class vector {
         T& operator[](size_type i) { return dt[i]; }
         const T& operator[](size_type i) const { return dt[i]; }
 
+
         void assign(iterator, iterator);
         void assign(size_type, const value_type&);
         void assign (std::initializer_list<value_type>);
@@ -109,6 +110,18 @@ class vector {
         size_type size() const noexcept { return sz - dt; }
 
         void swap(vector&);
+
+        bool operator==(const vector& stud);
+        bool operator!=(const vector& stud);
+
+        template<class t>
+        friend bool operator<(const vector<t>& a, const vector<t>& b);
+        template<class t>
+        friend bool operator>(const vector<t>& a, const vector<t>& b);
+        template<class t>
+        friend bool operator<=(const vector<t>& a, const vector<t>& b);
+        template<class t>
+        friend bool operator>=(const vector<t>& a, const vector<t>& b);
 
     private:
         iterator dt;
