@@ -278,3 +278,33 @@ Rezultatas:
     p1: 27
     p2: 27
 ```
+---
+## Spartos analizė
+
+### std::vector
+| Įrašų kiekis | Duomenų paruošimas naudojimui programoje, s | Studentų rūšiavimas pagal vardus, s | Studentų rūšiavimas į dvi kategorijas, s | Studentų išvedimas į du naujus failus, s | Programos veikimo laikas, s |
+|---|---|---|---|---|---|
+| 1,000 | 0.0030017 | 0 | 0 | 0.0059955 | 0.0180172 |
+| 10,000 | 0.0199938 | 0.0039748 | 0.0029974 | 0.0180094 | 0.0642923 |
+| 100,000 | 0.184032 | 0.0440006 | 0.0300147 | 0.128 | 0.489988 |
+| 1,000,000 | 1.82604 | 0.529997 | 0.26796 | 1.197 | 4.76364 |
+| 10,000,000 | 17.886 | 6.54105 | 2.67504 | 11.752 | 48.2796 |
+
+### vector
+| Įrašų kiekis | Duomenų paruošimas naudojimui programoje, s | Studentų rūšiavimas pagal vardus, s | Studentų rūšiavimas į dvi kategorijas, s | Studentų išvedimas į du naujus failus, s | Programos veikimo laikas, s |
+|---|---|---|---|---|---|
+| 1,000 | 0.0030024 | 0.0009995 | 0.0019811 | 0.0030035 | 0.0160106 |
+| 10,000 | 0.0260451 | 0.0110303 | 0.0200013 | 0.015854 | 0.099345 |
+| 100,000 | 0.239034 | 0.0970005 | 0.376034 | 0.143997 | 0.973035 |
+| 1,000,000 | 2.307 | 0.993034 | 3.82303 | 1.163 | 9.31 |
+| 10,000,000 | 24.376 | 9.979 | 38.3776 | 12.4497 | 95.6563 |
+
+*\* Programos testvaimas buvo atliktas naudojant g++ kompiliatorių (gcc version 8.1.0, x86_64-posix-seh-rev0)*  
+*\* Naudota sistema: i5-8300h, 16gb 2667 MHz CL19, Samsung 970 EVO Plus*  
+*\* Programos veikimo laikas buvo pradėtas skaičiuoti sugeneravus duomenų failą*  
+*\* Testuojant buvo naudojami failai su 10 namų darbų pažymių*  
+*\* Testuojant studentai buvo skirtomi panaudojant vieną naują konteinerį*  
+
+![1,000,000](https://user-images.githubusercontent.com/80033246/168855066-05776d23-0b80-4746-9cb4-159983b95fa2.png)  
+
+![10,000,000](https://user-images.githubusercontent.com/80033246/168855168-eb3c1d5d-c1fa-49dd-a84e-4b51f815a952.png)
